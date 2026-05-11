@@ -4,8 +4,10 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import uz.java.kpisystem.entity.enums.TaskLayer;
 import uz.java.kpisystem.entity.enums.TaskPriority;
 import uz.java.kpisystem.entity.enums.TaskStatus;
+import uz.java.kpisystem.entity.enums.TaskType;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -45,5 +47,14 @@ public class Task {
     @ElementCollection
     private List<String> attachmentUrls = new ArrayList<>();
 
+    @Enumerated(EnumType.STRING)
     private TaskLayer layer;
+
+    @Enumerated(EnumType.STRING)
+    private TaskType type;
+
+    @Column(name = "review_due_date")
+    private LocalDateTime reviewDueDate;
+
+    private Long parentId;
 }
