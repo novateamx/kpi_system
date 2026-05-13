@@ -1,10 +1,8 @@
 package uz.java.kpisystem.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -15,28 +13,29 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @MappedSuperclass
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public abstract class Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    Long id;
 
     @CreationTimestamp
-    private LocalDateTime createdAt;
+    LocalDateTime createdAt;
 
     @LastModifiedDate
-    private LocalDateTime updatedAt;
+    LocalDateTime updatedAt;
 
-    private LocalDateTime deletedAt;
+    LocalDateTime deletedAt;
 
     //todo sessiondagi user id si tushadi
-    private Long createdBy;
+    Long createdBy;
 
     // todo sessiondagi update qivotgan user id si tushadi
-    private Long updatedBy;
+    Long updatedBy;
 
     @Column(columnDefinition = "DEFAULT BOOLEAN FALSE")
-    private Boolean deleted;
+    Boolean deleted;
 
     public void makeAsDeleted() {
         this.deletedAt = LocalDateTime.now();
