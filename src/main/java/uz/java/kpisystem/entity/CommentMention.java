@@ -5,23 +5,19 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Entity
-@Table(name = "checklist_items")
-public class CheckListItem {
+@Table(name = "comment_mentions")
+public class CommentMention {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    private Long commentId;
 
-    @ManyToOne
-    @JoinColumn(name = "checklist_id", referencedColumnName = "id")
-    private CheckList checkList;
+    private Long mentionedUserId;
 
-    @ManyToOne
-    @JoinColumn(name = "assigner_id")
-    private User user;
 }

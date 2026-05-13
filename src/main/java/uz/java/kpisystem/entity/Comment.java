@@ -5,23 +5,29 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Entity
-@Table(name = "checklist_items")
-public class CheckListItem {
+@Table(name = "comments")
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    private String text;
+
+    private Long authorId;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
 
     @ManyToOne
-    @JoinColumn(name = "checklist_id", referencedColumnName = "id")
-    private CheckList checkList;
+    @JoinColumn(name = "task_id")
+    private Task task;
 
-    @ManyToOne
-    @JoinColumn(name = "assigner_id")
-    private User user;
+    private Long parentId;
 }

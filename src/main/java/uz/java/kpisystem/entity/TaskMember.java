@@ -5,23 +5,22 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "task_members")
 @Data
-@Entity
-@Table(name = "checklist_items")
-public class CheckListItem {
+public class TaskMember {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    @ManyToOne
+    @JoinColumn(name = "task_id")
+    private Task task;
 
     @ManyToOne
-    @JoinColumn(name = "checklist_id", referencedColumnName = "id")
-    private CheckList checkList;
-
-    @ManyToOne
-    @JoinColumn(name = "assigner_id")
+    @JoinColumn(name = "member_id")
     private User user;
 }

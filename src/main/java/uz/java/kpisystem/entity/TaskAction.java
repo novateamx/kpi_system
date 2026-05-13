@@ -9,19 +9,22 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Entity
-@Table(name = "checklist_items")
-public class CheckListItem {
+@Table(name = "task_action")
+public class TaskAction {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private Long projectId;
+
+    private Long projectViewId;
+
+    private Long taskId;
+
     private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "checklist_id", referencedColumnName = "id")
-    private CheckList checkList;
+    private String type;
 
-    @ManyToOne
-    @JoinColumn(name = "assigner_id")
-    private User user;
+    private Long createdBy;
 }
