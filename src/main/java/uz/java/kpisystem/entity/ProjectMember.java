@@ -1,21 +1,15 @@
 package uz.java.kpisystem.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "project_members")
-@Data
-public class ProjectMember {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+@Getter
+@Setter
+public class ProjectMember  extends Auditable {
     @ManyToOne
     @JoinColumn(name = "project_id")
     private Project project;

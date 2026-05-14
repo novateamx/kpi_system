@@ -1,20 +1,15 @@
 package uz.java.kpisystem.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "task_action")
-public class TaskAction {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class TaskAction  extends Auditable{
 
     private Long projectId;
 
@@ -26,5 +21,4 @@ public class TaskAction {
 
     private String type;
 
-    private Long createdBy;
 }

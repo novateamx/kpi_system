@@ -1,17 +1,12 @@
 package uz.java.kpisystem.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@AllArgsConstructor @Data @NoArgsConstructor
+@AllArgsConstructor @Getter @Setter
+@NoArgsConstructor
 @Entity @Table(name = "groups")
-public class Group {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Group  extends Auditable {
 
     private String name;
 
