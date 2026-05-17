@@ -9,7 +9,8 @@ import lombok.*;
 @Getter
 @Setter
 @Table(name = "organizations")
-public class Organization extends Auditable  {
+public class Organization extends Auditable {
+
     private String name;
 
     private String logo;

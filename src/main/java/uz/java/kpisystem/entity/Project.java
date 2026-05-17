@@ -1,7 +1,9 @@
 package uz.java.kpisystem.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import uz.java.kpisystem.entity.enums.ProjectStatus;
 
 import java.time.LocalDate;
@@ -9,11 +11,9 @@ import java.time.LocalDate;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
+@Data
 @Table(name = "projects")
-public class Project  extends Auditable  {
-
+public class Project extends Auditable {
 
     private String name;
 
@@ -28,5 +28,9 @@ public class Project  extends Auditable  {
 
     @ManyToOne
     @JoinColumn(name = "organization_id")
-    private Organization organization;
+    private Organization organization; // target= "organizationId", source = "organization.id"
+
+    @ManyToOne
+    @JoinColumn(name = "group_id")
+    private Group group;
 }

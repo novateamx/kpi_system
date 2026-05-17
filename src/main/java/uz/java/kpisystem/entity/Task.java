@@ -1,7 +1,9 @@
 package uz.java.kpisystem.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import uz.java.kpisystem.entity.enums.TaskLayer;
 import uz.java.kpisystem.entity.enums.TaskPriority;
 import uz.java.kpisystem.entity.enums.TaskStatus;
@@ -15,11 +17,9 @@ import java.util.List;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
+@Data
 @Table(name = "tasks")
-public class Task  extends Auditable{
-
+public class Task extends Auditable {
 
     private String name;
 
