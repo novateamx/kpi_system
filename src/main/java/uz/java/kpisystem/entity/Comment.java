@@ -1,29 +1,23 @@
 package uz.java.kpisystem.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Entity
 @Table(name = "comments")
-public class Comment {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Comment extends Auditable {
 
     private String text;
 
     private Long authorId;
-
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;
 
     @ManyToOne
     @JoinColumn(name = "task_id")

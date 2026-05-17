@@ -10,11 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Entity
 @Table(name = "task_tags")
-public class TaskTag {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class TaskTag extends Auditable {
 
     private String name;
 

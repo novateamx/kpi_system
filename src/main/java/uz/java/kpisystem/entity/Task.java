@@ -19,10 +19,7 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 @Table(name = "tasks")
-public class Task {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Task extends Auditable {
 
     private String name;
 

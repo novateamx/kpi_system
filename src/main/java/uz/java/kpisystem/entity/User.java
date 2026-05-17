@@ -16,11 +16,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @Table(name = "users")
-public class User {
-
-    @Id  // -->> primary key
-    @GeneratedValue(strategy = GenerationType.IDENTITY) //-->> auto increment bilan sequence qip beradi
-    private Long id;
+public class User extends Auditable {
 
     @Column(name = "first_name")
     private String firstName;
@@ -32,12 +28,6 @@ public class User {
     private String email;
 
     private String phone;
-
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
 
     private LocalDateTime deletedAt;
 

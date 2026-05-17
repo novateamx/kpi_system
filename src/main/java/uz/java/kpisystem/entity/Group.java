@@ -7,17 +7,9 @@ import lombok.NoArgsConstructor;
 
 @AllArgsConstructor @Data @NoArgsConstructor
 @Entity @Table(name = "groups")
-public class Group {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Group extends Auditable {
 
     private String name;
 
     private Integer taskCount;
-
-    @ManyToOne
-    @JoinColumn(name = "project_id")
-    private Project project;
 }

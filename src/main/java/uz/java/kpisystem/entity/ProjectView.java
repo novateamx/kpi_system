@@ -10,10 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Table(name = "project_views")
-public class ProjectView {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class ProjectView extends Auditable {
 
     private String name;
 

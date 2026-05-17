@@ -13,10 +13,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Data
 @Table(name = "projects")
-public class Project {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Project extends Auditable {
 
     private String name;
 
@@ -32,4 +29,8 @@ public class Project {
     @ManyToOne
     @JoinColumn(name = "organization_id")
     private Organization organization;
+
+    @ManyToOne
+    @JoinColumn(name = "group_id")
+    private Group group;
 }

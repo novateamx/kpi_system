@@ -10,11 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Table(name = "comment_mentions")
-public class CommentMention {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class CommentMention extends Auditable {
 
     private Long commentId;
 

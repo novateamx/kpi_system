@@ -34,7 +34,7 @@ public abstract class Auditable {
     // todo sessiondagi update qivotgan user id si tushadi
     Long updatedBy;
 
-    @Column(columnDefinition = "DEFAULT BOOLEAN FALSE")
+    @Column(columnDefinition = "BOOLEAN DEFAULT FALSE")
     Boolean deleted;
 
     public void makeAsDeleted() {
