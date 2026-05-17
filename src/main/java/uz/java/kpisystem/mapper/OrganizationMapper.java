@@ -14,5 +14,7 @@ public interface OrganizationMapper {
     Organization toEntity(OrganizationRequest request);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+
     void updateFromRequest(OrganizationRequest request, @MappingTarget Organization organization);
+
 }
