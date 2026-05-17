@@ -28,7 +28,7 @@ public class Project extends Auditable {
 
     @ManyToOne
     @JoinColumn(name = "organization_id")
-    private Organization organization;
+    private Organization organization; // target= "organizationId", source = "organization.id"
 
     @ManyToOne
     @JoinColumn(name = "group_id")
