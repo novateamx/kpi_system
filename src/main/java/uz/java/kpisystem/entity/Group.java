@@ -1,12 +1,16 @@
 package uz.java.kpisystem.entity;
 
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import lombok.*;
 
-@AllArgsConstructor @Data @NoArgsConstructor
-@Entity @Table(name = "groups")
+@AllArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
+@Entity
+@Table(name = "groups")
+@Builder
 public class Group extends Auditable {
 
     private String name;

@@ -1,6 +1,5 @@
 package uz.java.kpisystem.service;
 
-import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
 import uz.java.kpisystem.dto.project.ProjectFilter;
 import uz.java.kpisystem.dto.project.ProjectInfo;
@@ -8,6 +7,7 @@ import uz.java.kpisystem.dto.project.ProjectRequest;
 import uz.java.kpisystem.entity.Group;
 import uz.java.kpisystem.entity.Organization;
 import uz.java.kpisystem.entity.Project;
+import uz.java.kpisystem.exception.CustomNotFoundException;
 import uz.java.kpisystem.mapper.ProjectMapper;
 import uz.java.kpisystem.repository.GroupRepository;
 import uz.java.kpisystem.repository.OrganizationRepository;
@@ -42,9 +42,9 @@ public class ProjectService implements IProjectService {
         Project project = mapper.toEntity(request);
 
         Organization org = organizationRepository.findById(request.getOrganizationId())
-                .orElseThrow(() -> new RuntimeException("Organization not found"));
+                .orElseThrow(() -> new CustomNotFoundException("Organization not found"));
         Group group = groupRepository.findById(request.getGroupId())
-                .orElseThrow(() -> new RuntimeException("Group not found"));
+                .orElseThrow(() -> new CustomNotFoundException("Group not found"));
 
         project.setOrganization(org);
         project.setGroup(group);
@@ -55,18 +55,18 @@ public class ProjectService implements IProjectService {
     @Override
     public ProjectInfo update(Long id, ProjectRequest request) {
         Project project = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Project not found"));
+                .orElseThrow(() -> new CustomNotFoundException("Project not found"));
 
         mapper.updateFromRequest(request, project);
 
         if (request.getOrganizationId() != null) {
             Organization org = organizationRepository.findById(request.getOrganizationId())
-                    .orElseThrow(() -> new RuntimeException("Organization not found"));
+                    .orElseThrow(() -> new CustomNotFoundException("Organization not found"));
             project.setOrganization(org);
         }
         if (request.getGroupId() != null) {
             Group group = groupRepository.findById(request.getGroupId())
-                    .orElseThrow(() -> new RuntimeException("Group not found"));
+                    .orElseThrow(() -> new CustomNotFoundException("Group not found"));
             project.setGroup(group);
         }
 
@@ -78,7 +78,7 @@ public class ProjectService implements IProjectService {
     public ProjectInfo getOne(Long id) {
         Optional<Project> opt = repository.findById(id);
         if (!opt.isPresent())
-            throw new RuntimeException("Project not found");
+            throw new CustomNotFoundException("Project not found");
 
         Project project = opt.get();
         return mapper.toResponse(project);
@@ -86,7 +86,7 @@ public class ProjectService implements IProjectService {
 
     @Override
     public Boolean delete(Long id) {
-        Project project = repository.findById(id).orElseThrow(() -> new RuntimeException("Project not found"));;
+        Project project = repository.findById(id).orElseThrow(() -> new CustomNotFoundException("Project not found"));;
         project.makeAsDeleted();
         repository.save(project);
         return true;

@@ -5,6 +5,7 @@ import uz.java.kpisystem.dto.organization.OrganizationFilter;
 import uz.java.kpisystem.dto.organization.OrganizationInfo;
 import uz.java.kpisystem.dto.organization.OrganizationRequest;
 import uz.java.kpisystem.entity.Organization;
+import uz.java.kpisystem.exception.CustomNotFoundException;
 import uz.java.kpisystem.mapper.OrganizationMapper;
 import uz.java.kpisystem.repository.OrganizationRepository;
 
@@ -51,7 +52,7 @@ public class OrganizationService implements IOrganizationService {
     public OrganizationInfo update(Long id, OrganizationRequest request) {
         Optional<Organization> opt = repository.findById(id);
         if (!opt.isPresent())
-            throw new RuntimeException("Organization not found");
+            throw new CustomNotFoundException("Organization not found");
         Organization organization = opt.get();
         mapper.updateFromRequest(request, organization);
         repository.save(organization); // update qiladi
@@ -63,7 +64,7 @@ public class OrganizationService implements IOrganizationService {
     public OrganizationInfo getOne(Long id) {
         Optional<Organization> opt = repository.findById(id);
         if (!opt.isPresent())
-            throw new RuntimeException("Organization not found");
+            throw new CustomNotFoundException("Organization not found");
 
         Organization organization = opt.get();
         return mapper.toResponse(organization);
@@ -72,7 +73,7 @@ public class OrganizationService implements IOrganizationService {
     @Override
     public Boolean delete(Long id) {
 //        Organization organization = repository.findById(id).orElse(null);
-        Organization organization = repository.findById(id).orElseThrow(() -> new RuntimeException("Organization not found"));
+        Organization organization = repository.findById(id).orElseThrow(() -> new CustomNotFoundException("Organization not found"));
 //        repository.delete(organization); // hard delete
         organization.makeAsDeleted();
         repository.save(organization); // soft delete

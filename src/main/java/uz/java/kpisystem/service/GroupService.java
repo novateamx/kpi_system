@@ -1,55 +1,72 @@
 package uz.java.kpisystem.service;
 
-import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import uz.java.kpisystem.dto.group.GroupFilter;
+import uz.java.kpisystem.dto.group.GroupResponse;
 import uz.java.kpisystem.entity.Group;
+import uz.java.kpisystem.exception.CustomNotFoundException;
+import uz.java.kpisystem.mapper.GroupMapper;
 import uz.java.kpisystem.repository.GroupRepository;
+import uz.java.kpisystem.specifications.GroupSpecification;
+import uz.java.kpisystem.specifications.SearchSpecification;
+
 import java.util.List;
 import java.util.Optional;
 
 @Service
-
-public class GroupService  implements IGroupService{
+public class GroupService implements IGroupService {
     private final GroupRepository repository;
+    private final GroupMapper mapper;
+    private final String msgcode = "group.not.found";
 
-    public GroupService(GroupRepository repository) {
+    public GroupService(GroupRepository repository, GroupMapper mapper) {
         this.repository = repository;
+        this.mapper = mapper;
     }
 
-    public List<Group> getAll(GroupFilter groupFilter) {
-          return repository.findAll();
+    public List<GroupResponse> getAll(GroupFilter groupFilter) {
+        GroupSpecification spec = new GroupSpecification(groupFilter);
+        Pageable pagination = SearchSpecification.getPageable(groupFilter.getPage(), groupFilter.getLimit(),
+                groupFilter.getSortBy());
+        return repository.findAll(spec, pagination).stream().map(mapper::toResponse).toList();
     }
 
     @Override
-    public Group create(Group body) {
-        return repository.save(body);
+    public Long create(String name) {
+//        Group group = new Group();
+//        group.setName(name);
+        Group build = Group.builder().name(name).build();
+        return repository.save(build).getId();
     }
 
     @Override
-    public Group update(Long id,Group body) {
+    public Long update(Long id, String name) {
         Optional<Group> opt = repository.findById(id);
-        if (!opt.isPresent()){
-            throw  new RuntimeException("Group not found!!!");
-        }
-        return repository.save(body);
-     }
-
-    @Override
-    public Group getOne(Long id) {
-         Optional<Group> group = repository.findById(id);
-         if(!group.isPresent()) {
-             System.out.println("Group not found!!!");
-             throw  new RuntimeException("Group not found!!!");
-         }
-         return group.get();
+        if (!opt.isPresent())
+            throw new CustomNotFoundException(msgcode);
+        Group group = opt.get();
+        group.setName(name);
+        return repository.save(group).getId();
     }
 
     @Override
-    public Group delete(Long id) {
-        Group group = this.getOne(id);
+    public GroupResponse getOne(Long id) {
+        Optional<Group> opt = repository.findById(id);
+        if (!opt.isPresent())
+            throw new CustomNotFoundException(msgcode);
+
+        Group group = opt.get();
+        return mapper.toResponse(group);
+    }
+
+    @Override
+    public Boolean delete(Long id) {
+        Group group = repository.findById(id).orElseThrow(
+                () -> new CustomNotFoundException(msgcode)
+        );
         group.makeAsDeleted();
         repository.save(group);
-        return group;
+        return true;
     }
 }

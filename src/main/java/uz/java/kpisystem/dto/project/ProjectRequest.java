@@ -10,7 +10,6 @@ import java.time.LocalDate;
 
 @Data
 public class ProjectRequest {
-    @NotNull(message = "name must not be null")
     @NotBlank(message = "name must not be blank")
     private String name;
     private String description;
