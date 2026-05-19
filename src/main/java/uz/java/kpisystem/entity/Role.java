@@ -1,7 +1,12 @@
 package uz.java.kpisystem.entity;
 
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
 
 @Entity
 @Table(name = "roles")
@@ -9,9 +14,14 @@ import lombok.*;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Role extends Auditable {
+public class Role extends Auditable implements GrantedAuthority {
 
     private String name;
 
     private String code;
+
+    @Override
+    public String getAuthority() {
+        return "ROLE_" + this.code;
+    }
 }

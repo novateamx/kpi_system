@@ -48,4 +48,6 @@ public class User extends Auditable {
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
+
+    private String password;
 }

@@ -5,8 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import uz.java.kpisystem.entity.User;
 
 import java.util.Collection;
 import java.util.Set;
@@ -26,11 +26,15 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public @Nullable String getPassword() {
-        return user.getPassword();
+        return "";
     }
 
     @Override
     public String getUsername() {
-        return user.getUsername();
+        return "";
+    }
+
+    public Long getUserId() {
+        return user.getId();
     }
 }

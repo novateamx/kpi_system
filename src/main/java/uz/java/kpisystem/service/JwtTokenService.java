@@ -20,12 +20,12 @@ public class JwtTokenService {
         return jwtUtil.isTokenValid(token, getTokenSecret());
     }
 
-    public String generateToken(String subject) {
-        return jwtUtil.jwt(new HashMap<>(), subject, getTokenSecret());
+    public String generateToken(Long subject) {
+        return jwtUtil.jwt(new HashMap<>(), subject.toString(), getTokenSecret());
     }
 
-    public String generateRefreshToken(String subject) {
-        return jwtUtil.refreshJwt(new HashMap<>(), subject, getTokenSecret());
+    public String generateRefreshToken(Long subject) {
+        return jwtUtil.refreshJwt(new HashMap<>(), subject.toString(), getTokenSecret());
     }
 
     public String subject(String token) {
