@@ -1,6 +1,7 @@
 package uz.java.kpisystem.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import uz.java.kpisystem.dto.group.GroupFilter;
 import uz.java.kpisystem.dto.group.GroupResponse;
@@ -19,6 +20,7 @@ public class GroupController {
         this.service = service;
     }
 
+//    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYER')")
     @GetMapping("/all")
     public ResponseEntity<?> getAll(@RequestBody GroupFilter body)  {
         List<GroupResponse> groups = this.service.getAll(body);

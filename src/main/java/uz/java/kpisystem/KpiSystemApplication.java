@@ -1,5 +1,6 @@
 package uz.java.kpisystem;
 
+import jakarta.annotation.PostConstruct;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -10,6 +11,11 @@ public class KpiSystemApplication {
         SpringApplication.run(KpiSystemApplication.class, args);
     }
 
+
+    @PostConstruct
+    public String createUser() {
+        return "ADMIN";
+    }
 //    library
 //    framework
 
