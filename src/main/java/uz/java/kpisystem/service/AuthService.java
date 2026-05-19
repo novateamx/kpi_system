@@ -21,9 +21,9 @@ public class AuthService {
     private final JwtTokenService jwtTokenService;
     private final PasswordEncoder passwordEncoder;
 
-    public TokenResponse login(String username, String reqPassword) {
+    public TokenResponse login(String username, String reqPassword) { // 1234
         User user = userRepository.findByUsername(username);
-        if (!passwordEncoder.matches(reqPassword, user.getPassword())) {
+        if (!passwordEncoder.matches(reqPassword, user.getPassword())) { // gdsg53453453afsdfs@#@
             throw new RuntimeException("Invalid username or password");
         }
 
@@ -41,7 +41,7 @@ public class AuthService {
                     .build();
         }
         String accessToken = jwtTokenService.generateToken(user.getId());
-        String refreshToken = jwtTokenService.generateToken(user.getId());
+        String refreshToken = jwtTokenService.generateRefreshToken(user.getId());
         sessionUserRepository.save(SessionUser.builder()
                 .user(user)
                 .accessToken(accessToken)

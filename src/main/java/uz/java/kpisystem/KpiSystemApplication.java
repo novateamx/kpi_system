@@ -1,11 +1,24 @@
 package uz.java.kpisystem;
 
 import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import uz.java.kpisystem.entity.User;
+import uz.java.kpisystem.repository.UserRepository;
 
+@Slf4j
 @SpringBootApplication
 public class KpiSystemApplication {
+
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    public KpiSystemApplication(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     public static void main(String[] args) {
         SpringApplication.run(KpiSystemApplication.class, args);
@@ -13,8 +26,13 @@ public class KpiSystemApplication {
 
 
     @PostConstruct
-    public String createUser() {
-        return "ADMIN";
+    public void createUser() {
+        User user = new User();
+        user.setUsername("admin");
+        user.setPassword(passwordEncoder.encode("admin"));
+        user.setFirstName("Admin");
+        userRepository.save(user);
+        log.info("User created");
     }
 //    library
 //    framework

@@ -50,4 +50,6 @@ public class User extends Auditable {
     private Role role;
 
     private String password;
+
+    private String username;
 }

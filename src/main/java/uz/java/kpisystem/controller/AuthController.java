@@ -2,6 +2,7 @@ package uz.java.kpisystem.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import uz.java.kpisystem.dto.TokenResponse;
 import uz.java.kpisystem.dto.UserInfo;
@@ -20,6 +21,7 @@ public class AuthController {
     }
 
     @GetMapping("/me")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<UserInfo> me() {
         return ResponseEntity.ok(service.me());
     }
