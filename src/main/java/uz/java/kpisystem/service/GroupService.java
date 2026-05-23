@@ -2,6 +2,7 @@ package uz.java.kpisystem.service;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import uz.java.kpisystem.dto.group.GroupFilter;
 import uz.java.kpisystem.dto.group.GroupResponse;
 import uz.java.kpisystem.entity.Group;
@@ -25,6 +26,7 @@ public class GroupService implements IGroupService {
         this.mapper = mapper;
     }
 
+    @Transactional(readOnly = true)
     public List<GroupResponse> getAll(GroupFilter groupFilter) {
         GroupSpecification spec = new GroupSpecification(groupFilter);
         Pageable pagination = SearchSpecification.getPageable(groupFilter.getPage(), groupFilter.getLimit(),
@@ -33,11 +35,15 @@ public class GroupService implements IGroupService {
     }
 
     @Override
+    @Transactional
     public Long create(String name) {
 //        Group group = new Group();
 //        group.setName(name);
         Group build = Group.builder().name(name).build();
-        return repository.save(build).getId();
+        Group save = repository.save(build);
+        if (1 == 1)
+            throw new CustomNotFoundException("test uchun @Transactional roll back qilish");
+        return save.getId();
     }
 
     @Override

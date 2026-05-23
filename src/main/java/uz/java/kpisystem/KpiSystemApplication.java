@@ -5,7 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import uz.java.kpisystem.entity.Role;
 import uz.java.kpisystem.entity.User;
+import uz.java.kpisystem.repository.RoleRepository;
 import uz.java.kpisystem.repository.UserRepository;
 
 @Slf4j
@@ -14,10 +16,12 @@ public class KpiSystemApplication {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final RoleRepository roleRepository;
 
-    public KpiSystemApplication(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public KpiSystemApplication(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.roleRepository = roleRepository;
     }
 
     public static void main(String[] args) {
@@ -25,15 +29,17 @@ public class KpiSystemApplication {
     }
 
 
-    @PostConstruct
-    public void createUser() {
-        User user = new User();
-        user.setUsername("admin");
-        user.setPassword(passwordEncoder.encode("admin"));
-        user.setFirstName("Admin");
-        userRepository.save(user);
-        log.info("User created");
-    }
+//    @PostConstruct
+//    public void createUser() {
+//        User user = new User();
+//        user.setUsername("admin");
+//        user.setPassword(passwordEncoder.encode("1234"));
+//        user.setFirstName("Admin");
+//        Role role = roleRepository.findById(1L).orElse(null);
+//        user.setRole(role);
+//        userRepository.save(user);
+//        log.info("User created");
+//    }
 //    library
 //    framework
 

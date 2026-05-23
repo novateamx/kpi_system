@@ -13,11 +13,11 @@ public class CheckListItem  extends Auditable {
 
     private String name;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "checklist_id", referencedColumnName = "id")
     private CheckList checkList;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "assigner_id")
     private User user;
 }

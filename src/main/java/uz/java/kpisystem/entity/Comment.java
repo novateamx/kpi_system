@@ -17,7 +17,7 @@ public class Comment  extends Auditable {
 
     private Long authorId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "task_id")
     private Task task;
 

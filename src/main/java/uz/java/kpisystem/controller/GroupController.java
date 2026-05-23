@@ -5,7 +5,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import uz.java.kpisystem.dto.group.GroupFilter;
 import uz.java.kpisystem.dto.group.GroupResponse;
-import uz.java.kpisystem.entity.Group;
 import uz.java.kpisystem.service.GroupService;
 
 import java.util.List;
@@ -20,14 +19,17 @@ public class GroupController {
         this.service = service;
     }
 
-//    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYER')") // @PreAuthorize default da "ROLE_"
     @GetMapping("/all")
-    public ResponseEntity<?> getAll(@RequestBody GroupFilter body)  {
-        List<GroupResponse> groups = this.service.getAll(body);
+    public ResponseEntity<?> getAll(@RequestParam(required = false) Integer page, @RequestParam(required = false) Integer limit,
+                                    @RequestParam(required = false) String sortBy,
+                                    @RequestParam(required = false) String name, @RequestParam(required = false) Integer taskCount) {
+        List<GroupResponse> groups = this.service.getAll(new GroupFilter(page, limit, sortBy, name, taskCount));
         return ResponseEntity.ok(groups);
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<?> create(@RequestParam String name) {
         return ResponseEntity.ok(service.create(name));
     }

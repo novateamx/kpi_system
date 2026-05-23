@@ -1,6 +1,7 @@
 package uz.java.kpisystem.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.*;
@@ -18,6 +19,6 @@ public class CheckList extends Auditable {
 
     private String name;
 
-    @OneToMany(mappedBy = "checkList")
+    @OneToMany(mappedBy = "checkList", fetch = FetchType.LAZY)
     private Set<CheckListItem> items = new HashSet<>();
 }

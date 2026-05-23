@@ -39,17 +39,18 @@ public class User extends Auditable {
         return firstName + " " + lastName;
     }
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)  // Lazy, Eager
     @JoinTable(name = "user_organizations",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "organization_id"))
-    private Set<Organization> organization = new HashSet<>();
+    private Set<Organization> organization = new HashSet<>();  // getAll(), getOne() EAGER da kamchiligi bor
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id")
     private Role role;
 
     private String password;
 
+    @Column(unique = true)
     private String username;
 }

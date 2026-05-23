@@ -67,8 +67,9 @@ public class SecurityConfig {
                         httpSecuritySessionManagementConfigurer
                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(corsFilter(), ChannelProcessingFilter.class)
-                .addFilterBefore(globalFilter, UsernamePasswordAuthenticationFilter.class);
-
+                .addFilterBefore(globalFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(httpSecurityExceptionHandlingConfigurer ->
+                        httpSecurityExceptionHandlingConfigurer.configure(http));
         return http.build();
     }
 

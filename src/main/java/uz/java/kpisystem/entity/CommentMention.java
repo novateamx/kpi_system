@@ -11,7 +11,6 @@ import lombok.*;
 @Table(name = "comment_mentions")
 public class CommentMention   extends Auditable {
 
-
     private Long commentId;
 
     private Long mentionedUserId;

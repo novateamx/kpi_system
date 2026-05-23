@@ -7,10 +7,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import uz.java.kpisystem.exception.CustomNotFoundException;
+import uz.java.kpisystem.exception.GenericRuntimeException;
 import uz.java.kpisystem.util.ErrorUtil;
 import uz.java.kpisystem.util.Translator;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -45,5 +48,20 @@ public class GlobalExceptionHandler {
 
                 }).toList();
         return new ResponseEntity<>(Map.of("message", errors.get(0)), new HttpHeaders(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(GenericRuntimeException.class)
+    public ResponseEntity<Object> handleGenericRuntimeException(GenericRuntimeException ex) {
+        return new ResponseEntity<>(Map.of("message", List.of(translator.toLocale(ex.getMessage()))),
+                HttpStatus.BAD_REQUEST
+        );
+    }
+
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public ResponseEntity<?> handleNotFound(NoHandlerFoundException ex) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("success", false);
+        body.put("message", translator.toLocale("api.not.found"));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
     }
 }

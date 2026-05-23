@@ -6,6 +6,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -13,14 +16,15 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.LocaleResolver;
 import uz.java.kpisystem.config.CustomUserDetails;
 import uz.java.kpisystem.exception.CustomNotFoundException;
+import uz.java.kpisystem.exception.GenericRuntimeException;
 import uz.java.kpisystem.service.CustomUserDetailService;
 import uz.java.kpisystem.service.JwtTokenService;
 
 import java.io.IOException;
-import java.nio.file.AccessDeniedException;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Objects;
@@ -36,6 +40,10 @@ public class GlobalFilter extends OncePerRequestFilter {
     private final JwtTokenService jwtTokenService;
     private final CustomUserDetailService userDetailsService;
     private final LocaleResolver localeResolver;
+    @Autowired
+    @Qualifier("handlerExceptionResolver")
+    private HandlerExceptionResolver resolver;
+
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
@@ -51,9 +59,9 @@ public class GlobalFilter extends OncePerRequestFilter {
                     CustomUserDetails customUserDetails = userDetailsService.loadUserByUsername(userId);
                     authenticate(request, customUserDetails);
                 }
-            } catch (RuntimeException e) {
-                log.error("Access denied: " + e.getMessage());
-                response.sendError(HttpServletResponse.SC_FORBIDDEN, "Access Denied");
+            } catch (GenericRuntimeException | AccessDeniedException e) {
+                log.error("Global filter error", e.getMessage());
+                resolver.resolveException(request, response, null, e);
                 return;
             }
         }

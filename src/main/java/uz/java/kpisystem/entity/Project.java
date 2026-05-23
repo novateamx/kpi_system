@@ -26,11 +26,11 @@ public class Project extends Auditable {
     @Enumerated(EnumType.STRING)
     private ProjectStatus status;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "organization_id")
     private Organization organization; // target= "organizationId", source = "organization.id"
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id")
     private Group group;
 }
