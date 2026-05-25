@@ -15,6 +15,7 @@ import java.time.LocalDate;
 @Table(name = "projects")
 public class Project extends Auditable {
 
+
     private String name;
 
     private String description;

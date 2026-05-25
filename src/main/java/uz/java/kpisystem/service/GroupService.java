@@ -54,7 +54,8 @@ public class GroupService implements IGroupService {
             throw new CustomNotFoundException(msgcode);
         Group group = opt.get();
         group.setName(name);
-        return repository.save(group).getId();
+        Group save = repository.save(group);
+        return save.getId();
     }
 
     @Override

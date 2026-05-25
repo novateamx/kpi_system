@@ -1,6 +1,7 @@
 package uz.java.kpisystem.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import uz.java.kpisystem.dto.project.ProjectFilter;
 import uz.java.kpisystem.dto.project.ProjectInfo;
 import uz.java.kpisystem.dto.project.ProjectRequest;
@@ -12,6 +13,7 @@ import uz.java.kpisystem.mapper.ProjectMapper;
 import uz.java.kpisystem.repository.GroupRepository;
 import uz.java.kpisystem.repository.OrganizationRepository;
 import uz.java.kpisystem.repository.ProjectRepository;
+import uz.java.kpisystem.util.CachePrefix;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,13 +24,15 @@ public class ProjectService implements IProjectService {
     private final ProjectMapper mapper;
     private final OrganizationRepository organizationRepository;
     private final GroupRepository groupRepository;
+    private final CacheManagerService cacheManagerService;
 
 
-    public ProjectService(ProjectRepository repository, ProjectMapper mapper, OrganizationRepository organizationRepository, GroupRepository groupRepository ) {
+    public ProjectService(ProjectRepository repository, ProjectMapper mapper, OrganizationRepository organizationRepository, GroupRepository groupRepository, CacheManagerService cacheManagerService) {
         this.repository = repository;
         this.mapper = mapper;
         this.organizationRepository = organizationRepository;
         this.groupRepository = groupRepository;
+        this.cacheManagerService = cacheManagerService;
     }
 
     @Override
@@ -38,6 +42,7 @@ public class ProjectService implements IProjectService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Long create(ProjectRequest request) {
         Project project = mapper.toEntity(request);
 
@@ -48,8 +53,9 @@ public class ProjectService implements IProjectService {
 
         project.setOrganization(org);
         project.setGroup(group);
-
-        return repository.save(project).getId();
+        repository.save(project);
+        cacheManagerService.delete(CachePrefix.PROJECT);
+        return project.getId();
     }
 
     @Override
@@ -71,22 +77,29 @@ public class ProjectService implements IProjectService {
         }
 
         repository.save(project);
+        cacheManagerService.delete(CachePrefix.PROJECT);
         return getOne(id);
     }
 
     @Override
     public ProjectInfo getOne(Long id) {
+        Object data = cacheManagerService.get(id.toString(), CachePrefix.PROJECT);
+        if (data != null)
+            return (ProjectInfo) data;
         Optional<Project> opt = repository.findById(id);
         if (!opt.isPresent())
             throw new CustomNotFoundException("Project not found");
 
         Project project = opt.get();
-        return mapper.toResponse(project);
+        ProjectInfo info = mapper.toResponse(project);
+        cacheManagerService.put(id.toString(), CachePrefix.PROJECT, info);
+        return info;
     }
 
     @Override
     public Boolean delete(Long id) {
-        Project project = repository.findById(id).orElseThrow(() -> new CustomNotFoundException("Project not found"));;
+        Project project = repository.findById(id).orElseThrow(() -> new CustomNotFoundException("Project not found"));
+        ;
         project.makeAsDeleted();
         repository.save(project);
         return true;

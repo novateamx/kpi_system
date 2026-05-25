@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import uz.java.kpisystem.dto.ApiResponse;
 import uz.java.kpisystem.dto.project.ProjectFilter;
 import uz.java.kpisystem.dto.project.ProjectInfo;
 import uz.java.kpisystem.dto.project.ProjectRequest;
@@ -38,8 +39,8 @@ public class ProjectController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProjectInfo> getOne(@PathVariable Long id){
-        return ResponseEntity.ok(service.getOne(id));
+    public ApiResponse<ProjectInfo> getOne(@PathVariable Long id){
+        return new ApiResponse<>(service.getOne(id));
     }
 
     @DeleteMapping("/{id}")
