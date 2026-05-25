@@ -1,28 +1,24 @@
 package uz.java.kpisystem;
 
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import uz.java.kpisystem.entity.Role;
-import uz.java.kpisystem.entity.User;
-import uz.java.kpisystem.repository.RoleRepository;
-import uz.java.kpisystem.repository.UserRepository;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 @Slf4j
 @SpringBootApplication
+@EnableConfigurationProperties
 public class KpiSystemApplication {
 
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final RoleRepository roleRepository;
-
-    public KpiSystemApplication(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.roleRepository = roleRepository;
-    }
+//    private final UserRepository userRepository;
+//    private final PasswordEncoder passwordEncoder;
+//    private final RoleRepository roleRepository;
+//
+//    public KpiSystemApplication(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository) {
+//        this.userRepository = userRepository;
+//        this.passwordEncoder = passwordEncoder;
+//        this.roleRepository = roleRepository;
+//    }
 
     public static void main(String[] args) {
         SpringApplication.run(KpiSystemApplication.class, args);
@@ -73,7 +69,7 @@ public class KpiSystemApplication {
 //    Class ni bean qiladigan annotation lar:
 //    1) @Component, 2) @Service, 3) @Repository, @RestController
 
-//    application.properties
+//    application.yml
 //    bunda constant qiymatlar, boshqa serverlar bilan integratsiyalar
 //    va configuration lar yoziladi.
 //    2-usuli application.yml bilan

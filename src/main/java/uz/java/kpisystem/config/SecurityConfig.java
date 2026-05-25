@@ -17,6 +17,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import uz.java.kpisystem.filter.GlobalFilter;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Configuration
@@ -25,10 +26,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final GlobalFilter globalFilter;
-
-    public static final String[] AUTH_WHITELIST = {
-            "/auth/login"
-    };
+    private final AuthWhiteListProperty authWhiteListProperty;
 
     //    1. Basic authorization
 //    2. Form-based authorization
@@ -59,7 +57,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                                .requestMatchers(AUTH_WHITELIST).permitAll()
+                                .requestMatchers(authWhiteListProperty.getWhiteList().toArray(String[]::new)).permitAll()
 //                        .requestMatchers("/projects/**", HttpMethod.POST.name()).permitAll()
                                 .anyRequest().authenticated()
                 )

@@ -18,6 +18,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.LocaleResolver;
+import uz.java.kpisystem.config.AuthWhiteListProperty;
 import uz.java.kpisystem.config.CustomUserDetails;
 import uz.java.kpisystem.exception.CustomNotFoundException;
 import uz.java.kpisystem.exception.GenericRuntimeException;
@@ -29,8 +30,6 @@ import java.util.Arrays;
 import java.util.Locale;
 import java.util.Objects;
 
-import static uz.java.kpisystem.config.SecurityConfig.AUTH_WHITELIST;
-
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -40,6 +39,7 @@ public class GlobalFilter extends OncePerRequestFilter {
     private final JwtTokenService jwtTokenService;
     private final CustomUserDetailService userDetailsService;
     private final LocaleResolver localeResolver;
+    private final AuthWhiteListProperty property;
     @Autowired
     @Qualifier("handlerExceptionResolver")
     private HandlerExceptionResolver resolver;
@@ -96,7 +96,7 @@ public class GlobalFilter extends OncePerRequestFilter {
     }
 
     private boolean isOpenPath(String currentPath) {
-        return Arrays.stream(AUTH_WHITELIST).anyMatch(p -> pathMatcher.match(p, currentPath));
+        return Arrays.stream(property.getWhiteList().toArray(new String[0])).anyMatch(p -> pathMatcher.match(p, currentPath));
 
     }
 }
