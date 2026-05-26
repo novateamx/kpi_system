@@ -44,23 +44,23 @@ public class CacheManagerService {
     }
 
     public void delete(String cachePrefix) {
-//        User user = userSession.getCurrentUser().getUser();
-//        Set<String> set = user.getRoles().stream().map(Role::getCode).collect(Collectors.toSet());
-//        Set<String> allKeys = redisTemplate.keys("*");
-//        if (set.containsAll(List.of("ROLE_SUPERADMIN", "ROLE_REKTOR"))) {
-//            if (!allKeys.isEmpty()) {
-//                redisTemplate.delete(allKeys.stream()
-//                        .filter(deletedKey -> deletedKey.startsWith(cachePrefix))
-//                        .collect(Collectors.toSet()));
-//            }
-//        } else {
-//            if (!allKeys.isEmpty()) {
-//                redisTemplate.delete(allKeys.stream()
-//                        .filter(deletedKey -> deletedKey.startsWith(cachePrefix)
-//                                && deletedKey.endsWith(user.getId().toString()))
-//                        .collect(Collectors.toSet()));
-//            }
-//        }
+        User user = userSession.getCurrentUser().getUser();
+        String role = user.getRole().getCode();
+        Set<String> allKeys = redisTemplate.keys("*");
+        if (role.contains("ROLE_REKTOR")) {
+            if (!allKeys.isEmpty()) {
+                redisTemplate.delete(allKeys.stream()
+                        .filter(deletedKey -> deletedKey.startsWith(cachePrefix))
+                        .collect(Collectors.toSet()));
+            }
+        } else {
+            if (!allKeys.isEmpty()) {
+                redisTemplate.delete(allKeys.stream()
+                        .filter(deletedKey -> deletedKey.startsWith(cachePrefix)
+                                && deletedKey.endsWith(user.getId().toString()))
+                        .collect(Collectors.toSet()));
+            }
+        }
     }
 //
     public void deleteMultiple(List<String> cachePrefixes) {

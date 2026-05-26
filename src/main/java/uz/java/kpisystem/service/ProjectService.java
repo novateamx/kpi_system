@@ -1,5 +1,6 @@
 package uz.java.kpisystem.service;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uz.java.kpisystem.dto.project.ProjectFilter;
@@ -8,6 +9,7 @@ import uz.java.kpisystem.dto.project.ProjectRequest;
 import uz.java.kpisystem.entity.Group;
 import uz.java.kpisystem.entity.Organization;
 import uz.java.kpisystem.entity.Project;
+import uz.java.kpisystem.event.ProjectCacheEvictEvent;
 import uz.java.kpisystem.exception.CustomNotFoundException;
 import uz.java.kpisystem.mapper.ProjectMapper;
 import uz.java.kpisystem.repository.GroupRepository;
@@ -25,14 +27,16 @@ public class ProjectService implements IProjectService {
     private final OrganizationRepository organizationRepository;
     private final GroupRepository groupRepository;
     private final CacheManagerService cacheManagerService;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
 
-    public ProjectService(ProjectRepository repository, ProjectMapper mapper, OrganizationRepository organizationRepository, GroupRepository groupRepository, CacheManagerService cacheManagerService) {
+    public ProjectService(ProjectRepository repository, ProjectMapper mapper, OrganizationRepository organizationRepository, GroupRepository groupRepository, CacheManagerService cacheManagerService, ApplicationEventPublisher applicationEventPublisher) {
         this.repository = repository;
         this.mapper = mapper;
         this.organizationRepository = organizationRepository;
         this.groupRepository = groupRepository;
         this.cacheManagerService = cacheManagerService;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     @Override
@@ -54,7 +58,7 @@ public class ProjectService implements IProjectService {
         project.setOrganization(org);
         project.setGroup(group);
         repository.save(project);
-        cacheManagerService.delete(CachePrefix.PROJECT);
+        applicationEventPublisher.publishEvent(new ProjectCacheEvictEvent(CachePrefix.PROJECT));
         return project.getId();
     }
 
@@ -77,7 +81,7 @@ public class ProjectService implements IProjectService {
         }
 
         repository.save(project);
-        cacheManagerService.delete(CachePrefix.PROJECT);
+        applicationEventPublisher.publishEvent(new ProjectCacheEvictEvent(CachePrefix.PROJECT));
         return getOne(id);
     }
 
@@ -99,9 +103,9 @@ public class ProjectService implements IProjectService {
     @Override
     public Boolean delete(Long id) {
         Project project = repository.findById(id).orElseThrow(() -> new CustomNotFoundException("Project not found"));
-        ;
         project.makeAsDeleted();
         repository.save(project);
+        applicationEventPublisher.publishEvent(new ProjectCacheEvictEvent(CachePrefix.PROJECT));
         return true;
     }
 
