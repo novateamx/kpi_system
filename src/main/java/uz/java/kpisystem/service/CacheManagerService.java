@@ -7,12 +7,9 @@ import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import uz.java.kpisystem.config.UserSession;
 import uz.java.kpisystem.dto.CacheDto;
-import uz.java.kpisystem.entity.Role;
 import uz.java.kpisystem.entity.User;
 
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

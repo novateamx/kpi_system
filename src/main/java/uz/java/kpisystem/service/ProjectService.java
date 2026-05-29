@@ -98,8 +98,7 @@ public class ProjectService implements IProjectService {
 
     @Override
     public Boolean delete(Long id) {
-        Project project = repository.findById(id).orElseThrow(() -> new CustomNotFoundException("Project not found"));
-        ;
+        Project project = repository.findById(id).orElseThrow(() -> new CustomNotFoundException("Project not found"));;
         project.makeAsDeleted();
         repository.save(project);
         return true;
