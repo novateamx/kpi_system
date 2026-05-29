@@ -20,12 +20,14 @@ public class ProjectController {
     private final IProjectService service;
 
     @GetMapping
-    public ResponseEntity<List<ProjectInfo>> getAll(@RequestParam(required = false, defaultValue = "0") Integer page,
-                                                    @RequestParam(required = false, defaultValue = "10") Integer limit,
-                                                    @RequestParam(required = false, defaultValue = "createdAt") String sortBy) {
-        List<ProjectInfo> all = service.getAll(new ProjectFilter(page, limit, sortBy));
-        return ResponseEntity.ok(all);
-    };
+    public ApiResponse<List<ProjectInfo>> getAll(@RequestParam(required = false, defaultValue = "0") Integer page,
+                                                 @RequestParam(required = false, defaultValue = "10") Integer limit,
+                                                 @RequestParam(required = false, defaultValue = "createdAt") String sortBy) {
+        ApiResponse<List<ProjectInfo>> all = service.getAll(new ProjectFilter(page, limit, sortBy));
+        return all;
+    }
+
+    ;
 
     @PostMapping("/create")
     public ResponseEntity<Long> create(@RequestBody @Valid ProjectRequest request) {
@@ -39,7 +41,7 @@ public class ProjectController {
     }
 
     @GetMapping("/{id}")
-    public ApiResponse<ProjectInfo> getOne(@PathVariable Long id){
+    public ApiResponse<ProjectInfo> getOne(@PathVariable Long id) {
         return new ApiResponse<>(service.getOne(id));
     }
 

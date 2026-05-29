@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import uz.java.kpisystem.exception.CustomNotFoundException;
 import uz.java.kpisystem.exception.GenericRuntimeException;
+import uz.java.kpisystem.exception.RedisNotSerializableException;
 import uz.java.kpisystem.util.ErrorUtil;
 import uz.java.kpisystem.util.Translator;
 
@@ -32,6 +33,13 @@ public class GlobalExceptionHandler {
         log.error("GenericNotFoundException on: {}", ErrorUtil.getStacktrace(ex));
         return new ResponseEntity<>(Map.of("message", translator.toLocale(ex.getMessage())),
                 HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(RedisNotSerializableException.class)
+    public ResponseEntity<Object> handleRedisNotSerializableException(RedisNotSerializableException ex) {
+        log.error("RedisNotSerializableException on: {}", ErrorUtil.getStacktrace(ex));
+        return new ResponseEntity<>(Map.of("message", translator.toLocale(ex.getMessage())),
+                HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

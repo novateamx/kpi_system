@@ -7,7 +7,13 @@ import uz.java.kpisystem.entity.Project;
 
 @Mapper(componentModel = "spring")
 public interface ProjectMapper {
+//    @Mapping(source = "startDate", target = "startDate", qualifiedByName = "toLowerCase")
     ProjectInfo toResponse(Project project);
+
+//    @Named("toLowerCase")
+//    default String toLowerCase(String value) {
+//        return value != null ? value.toLowerCase() : null;
+//    }
 
     @Mapping(target = "organization", ignore = true)
     @Mapping(target = "group", ignore = true)

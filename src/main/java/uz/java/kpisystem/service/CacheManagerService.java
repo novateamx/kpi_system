@@ -10,6 +10,8 @@ import uz.java.kpisystem.dto.CacheDto;
 import uz.java.kpisystem.entity.User;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -39,27 +41,30 @@ public class CacheManagerService {
         User user = userSession.getCurrentUser().getUser();
         return String.format("%s/%s/%s", cachePrefix, key, user.getId());
     }
+    // 1 chisa prefix keladi
+    // 2 chisida entity id si keladi
+    // 3 sida user idsi kealadi
 
     public void delete(String cachePrefix) {
         User user = userSession.getCurrentUser().getUser();
         String role = user.getRole().getCode();
-        Set<String> allKeys = redisTemplate.keys("*");
-        if (role.contains("ROLE_REKTOR")) {
+        Set<String> allKeys = redisTemplate.keys("*"); // bu narsa yani * hamma key lani olib beradi
+        if (role.equals("ADMIN")) {
             if (!allKeys.isEmpty()) {
                 redisTemplate.delete(allKeys.stream()
-                        .filter(deletedKey -> deletedKey.startsWith(cachePrefix))
+                        .filter(redisKey -> redisKey.startsWith(cachePrefix))
                         .collect(Collectors.toSet()));
             }
         } else {
             if (!allKeys.isEmpty()) {
                 redisTemplate.delete(allKeys.stream()
-                        .filter(deletedKey -> deletedKey.startsWith(cachePrefix)
-                                && deletedKey.endsWith(user.getId().toString()))
+                        .filter(redisKey -> redisKey.startsWith(cachePrefix)
+                                && redisKey.endsWith(user.getId().toString()))
                         .collect(Collectors.toSet()));
             }
         }
     }
-//
+
     public void deleteMultiple(List<String> cachePrefixes) {
 //        User user = userSession.getCurrentUser().getUser();
 //        Set<String> set = user.getRoles().stream().map(Role::getCode).collect(Collectors.toSet());

@@ -2,6 +2,7 @@ package uz.java.kpisystem.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import uz.java.kpisystem.dto.ApiResponse;
 import uz.java.kpisystem.dto.project.ProjectFilter;
 import uz.java.kpisystem.dto.project.ProjectInfo;
 import uz.java.kpisystem.dto.project.ProjectRequest;
@@ -9,6 +10,7 @@ import uz.java.kpisystem.entity.Group;
 import uz.java.kpisystem.entity.Organization;
 import uz.java.kpisystem.entity.Project;
 import uz.java.kpisystem.exception.CustomNotFoundException;
+import uz.java.kpisystem.exception.RedisNotSerializableException;
 import uz.java.kpisystem.mapper.ProjectMapper;
 import uz.java.kpisystem.repository.GroupRepository;
 import uz.java.kpisystem.repository.OrganizationRepository;
@@ -36,9 +38,16 @@ public class ProjectService implements IProjectService {
     }
 
     @Override
-    public List<ProjectInfo> getAll(ProjectFilter projectFilter) {
+    @Transactional(readOnly = true)
+    public ApiResponse<List<ProjectInfo>> getAll(ProjectFilter projectFilter) {
+        Object data = cacheManagerService.get(String.valueOf(projectFilter.hashCode()), CachePrefix.PROJECT);
+        if (data != null) {
+            return (ApiResponse<List<ProjectInfo>>) data;
+        }
         List<Project> all = repository.findAll();
-        return all.stream().map(mapper::toResponse).toList();
+        List<ProjectInfo> response = all.stream().map(mapper::toResponse).toList();
+        cacheManagerService.put(String.valueOf(projectFilter.hashCode()), CachePrefix.PROJECT, new ApiResponse<>(response));
+        return new ApiResponse<>(response);
     }
 
     @Override
@@ -59,6 +68,7 @@ public class ProjectService implements IProjectService {
     }
 
     @Override
+    @Transactional
     public ProjectInfo update(Long id, ProjectRequest request) {
         Project project = repository.findById(id)
                 .orElseThrow(() -> new CustomNotFoundException("Project not found"));
@@ -82,6 +92,7 @@ public class ProjectService implements IProjectService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ProjectInfo getOne(Long id) {
         Object data = cacheManagerService.get(id.toString(), CachePrefix.PROJECT);
         if (data != null)
@@ -92,13 +103,18 @@ public class ProjectService implements IProjectService {
 
         Project project = opt.get();
         ProjectInfo info = mapper.toResponse(project);
-        cacheManagerService.put(id.toString(), CachePrefix.PROJECT, info);
+        try {
+            cacheManagerService.put(id.toString(), CachePrefix.PROJECT, info);
+        } catch (Exception e) {
+            throw new RedisNotSerializableException(e.getMessage());
+        }
         return info;
     }
 
     @Override
+    @Transactional
     public Boolean delete(Long id) {
-        Project project = repository.findById(id).orElseThrow(() -> new CustomNotFoundException("Project not found"));;
+        Project project = repository.findById(id).orElseThrow(() -> new CustomNotFoundException("Project not found"));
         project.makeAsDeleted();
         repository.save(project);
         return true;

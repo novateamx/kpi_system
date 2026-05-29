@@ -1,6 +1,7 @@
 package uz.java.kpisystem.service;
 
 import jakarta.validation.Valid;
+import uz.java.kpisystem.dto.ApiResponse;
 import uz.java.kpisystem.dto.project.ProjectFilter;
 import uz.java.kpisystem.dto.project.ProjectInfo;
 import uz.java.kpisystem.dto.project.ProjectRequest;
@@ -8,7 +9,7 @@ import uz.java.kpisystem.dto.project.ProjectRequest;
 import java.util.List;
 
 public interface IProjectService {
-    List<ProjectInfo> getAll(ProjectFilter projectFilter);
+    ApiResponse<List<ProjectInfo>> getAll(ProjectFilter projectFilter);
 
     Long create(@Valid ProjectRequest request);
 
@@ -16,6 +17,6 @@ public interface IProjectService {
 
     ProjectInfo getOne(Long id);
 
-     Boolean delete(Long id);
+    Boolean delete(Long id);
 
 }
