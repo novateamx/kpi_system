@@ -3,7 +3,7 @@ version: '3.8'
 services:
   postgres:
     image: postgres:17
-    container_name: postgres-for-spring-group
+    container_name: postgres
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: bexa
