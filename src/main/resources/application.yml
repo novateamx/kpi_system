@@ -23,10 +23,10 @@ spring:
   data:
     redis:
       port: 6379
-      host: localhost
+      host: redis
 
 server:
-  port: 7777
+  port: 7770
 
 jwt:
   token:
