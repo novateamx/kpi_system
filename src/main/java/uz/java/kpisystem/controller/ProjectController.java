@@ -23,8 +23,7 @@ public class ProjectController {
     public ApiResponse<List<ProjectInfo>> getAll(@RequestParam(required = false, defaultValue = "0") Integer page,
                                                  @RequestParam(required = false, defaultValue = "10") Integer limit,
                                                  @RequestParam(required = false, defaultValue = "createdAt") String sortBy) {
-        ApiResponse<List<ProjectInfo>> all = service.getAll(new ProjectFilter(page, limit, sortBy));
-        return all;
+        return service.getAll(new ProjectFilter(page, limit, sortBy));
     }
 
     ;

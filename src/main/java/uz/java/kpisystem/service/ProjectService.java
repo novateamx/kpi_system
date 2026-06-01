@@ -117,6 +117,8 @@ public class ProjectService implements IProjectService {
         Project project = repository.findById(id).orElseThrow(() -> new CustomNotFoundException("Project not found"));
         project.makeAsDeleted();
         repository.save(project);
+        // todo project o'chsa undagi hamma task lar ham o'chadi va cachedan ham unga bogliq hamma entity malumotlari o'chishi kk
+        cacheManagerService.delete(CachePrefix.PROJECT);
         return true;
     }
 
