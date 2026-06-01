@@ -1,6 +1,33 @@
 version: '3.8'
-
+#  agar shu yerni ozida image qidirmoqchi bolsayizla Ctrl+  space 2x
 services:
+  postgres:
+    image: postgres:17
+    container_name: postgres-for-spring-group
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: bexa
+      POSTGRES_DB: kpi_db
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - kpisystem-net
+  app:
+    build: .
+    container_name: kpi-system
+    ports:
+      - "7777:7777"
+    depends_on:
+      - postgres
+      - redis
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/kpi_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: bexa
+    networks:
+      - kpisystem-net
   redis:
     image: redis:latest
     container_name: redis
@@ -29,6 +56,7 @@ services:
 
 volumes:
   redis_data:
+  pg_data:
 
 networks:
   kpisystem-net:

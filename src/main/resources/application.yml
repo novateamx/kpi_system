@@ -11,9 +11,12 @@ spring:
       add-mappings: false
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/kpi_db
+    url: jdbc:postgresql://postgres:5432/kpi_db
     username: postgres
     password: bexa
+#    hikari:
+#      connection-timeout: 20000        # 20 sekund kutadi
+#      initialization-fail-timeout: -1  # cheksiz retry qiladi
   jpa:
     hibernate:
       ddl-auto: update

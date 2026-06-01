@@ -37,14 +37,14 @@ public class RedisConfig {
         return new JedisConnectionFactory(config);
     }
 
-    @PostConstruct
-    public void clearCache() {
-        System.out.println("In Clear Cache");
-        Jedis jedis = new Jedis(host, port, 10000); // timeout - shu Jedis ga connection agar bolmasa 10 sekundan kn
-        // avtoamatik uziladi
-        jedis.flushDB();
-        jedis.close();
-    }
+//    @PostConstruct
+//    public void clearCache() {
+//        System.out.println("In Clear Cache");
+//        Jedis jedis = new Jedis(host, port, 10000); // timeout - shu Jedis ga connection agar bolmasa 10 sekundan kn
+//        // avtoamatik uziladi
+//        jedis.flushDB();
+//        jedis.close();
+//    }
 
 //    1) agar action bajariladigan yani create, update yoki inviteProjectmemebr api lar bolsa redisdan malumotni eskisini o'chiramiz
 //    2) agar get actions yani malumot olish apilarida redis ga put qilib uni logikani boshida if ga tekshirib olamiz
