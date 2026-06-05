@@ -1,0 +1,23 @@
+Indexing bu malumotlar bazasida biror bir table dagi biror bir column
+ga qoyiladigan tezkor qidiruv operatori
+
+nimaga kerak? Indexing qidiruvni o(1) marta tezlashtiradi u xuddi
+javondan kitobni qayerdaligini bilgan holda qidirish demakdir.
+Agar indexing bolmasa Postgresql 1 talab qidirib chiqadi osha indexlangan field dagi malumotni ni topguncha
+
+indexing BTree algoritm ishlatib masalan User table dagi username boyicha
+index qoygan bolsak va 40 qatorda turgan asilbek degan username ni qidirayotganda u
+39 ta row ni aylanib chiqmasdan srazi shu index ga boradi.
+
+Postgresql da indexing da 2 xil turdagi indexing bor:
+1) Clustered indexing  odatda default holatda id primary key bolsa shu id clustered indexlangan boladi
+2) non-clustered indexing bu biza yaratadigan indexlar
+
+Indexing bu get zaproslani yoki qidiruv api larini tezlashtiradi ammo
+create, update, delete kabi action api larni tezligini sekinlashtiradi.
+
+
+1. Sarvar   sarvar@gmail.com
+2. Feruz    feruz@gmail.com  index qoyilgan edi
+3. Behruz   bexruz@gmail.com
+

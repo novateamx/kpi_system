@@ -30,7 +30,7 @@ public class CacheManagerService {
         return operations.get(generateKey(key, cachePrefix));
     }
 
-//    @Async - boshqa patokda ishlatib yuboradi shu method ni
+    @Async // - boshqa patokda ishlatib yuboradi shu method ni
     public void put(String key, String cachePrefix, Object data) {
         operations.set(generateKey(key, cachePrefix), data);
     }

@@ -19,6 +19,7 @@ import uz.java.kpisystem.repository.OrganizationRepository;
 import uz.java.kpisystem.repository.ProjectRepository;
 import uz.java.kpisystem.util.CachePrefix;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,14 +49,14 @@ public class ProjectService implements IProjectService {
         if (data != null) {
             return (ApiResponse<List<ProjectInfo>>) data;
         }
-        List<Project> all = repository.findAll();
+        List<Project> all = repository.findAllCustom();
         List<ProjectInfo> response = all.stream().map(mapper::toResponse).toList();
         cacheManagerService.put(String.valueOf(projectFilter.hashCode()), CachePrefix.PROJECT, new ApiResponse<>(response));
         return new ApiResponse<>(response);
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional
     public Long create(ProjectRequest request) {
         Project project = mapper.toEntity(request);
 
@@ -66,8 +67,8 @@ public class ProjectService implements IProjectService {
 
         project.setOrganization(org);
         project.setGroup(group);
-        cacheManagerService.delete(CachePrefix.PROJECT);
         repository.save(project);
+        cacheEvictEventListener.handleCacheEvict(new ProjectCacheEvictEvent(CachePrefix.PROJECT));
         return project.getId();
     }
 

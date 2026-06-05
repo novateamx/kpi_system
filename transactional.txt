@@ -1,4 +1,5 @@
- @Transactional faqat public method lada ishlatilinadi, ACID prinsipllarini automatik boshqaradi.
+ @Transactional faqat public method lada ishlatilinadi,
+ ACID prinsipllarini automatik boshqaradi.
 
    @Transactional
    public void createOrder() {
@@ -16,12 +17,15 @@
  ammo checked Exceptionlarni rollback qilmaydi( masalan Exception.class, IOException.class)
  checked exceptionlarni rollback qilish uchun -->
 
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional(rollbackFor = {Exception.class, IOException})
     public void test() throws Exception {
         throw new Exception("error");
     }
  qachon rollback qilmaydi? try-catch block ishlatsang, self-invocation, throw new Exception desang.
- Spring ichida nima bo'ladi? Asosiy g'oya:PROXY Spring sening classing ni togridan togri chaqirmaydi,
+
+ Spring ichida nima bo'ladi?
+ Asosiy g'oya: PROXY
+ Spring sening classing ni togridan togri chaqirmaydi,
  u proxy yaratadi yani nusxa oladi service dan. Spring 2 xil proxy ishlatadi:
     1) JDK Dynamic Proxy (interface bo‘lsa)
     2) CGLIB Proxy (class bo‘lsa)
@@ -53,13 +57,15 @@
 
  Important qoidalar--->>
  1. Self-invocation problem
- public void a() {
+
+ public void aMethod() {
      b(); // transactional ishlamaydi!
  }
 
  @Transactional
- public void b() {
+ public void bMethod() {
  }
+
  this.b() orqali chaqiryapti
  proxy bypass bo‘ladi
  transaction ishlamaydi

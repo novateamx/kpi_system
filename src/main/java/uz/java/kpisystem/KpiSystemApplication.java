@@ -9,7 +9,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @Slf4j
 @SpringBootApplication
 @EnableConfigurationProperties
-//@EnableAsync
+@EnableAsync
 public class KpiSystemApplication {
 
 //    private final UserRepository userRepository;
