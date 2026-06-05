@@ -39,10 +39,26 @@ services:
       - redis
     networks:
       - kpisystem-net
+  minio:
+    image: quay.io/minio/minio
+    container_name: minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    environment:
+      MINIO_ROOT_USER: admin_username
+      MINIO_ROOT_PASSWORD: adminpassword123
+    command: server /data --console-address ":9001"
+    networks:
+      - kpisystem-net
+
 
 volumes:
   redis_data:
   pg_data:
+  minio_data:
 
 networks:
   kpisystem-net:

@@ -11,7 +11,7 @@ spring:
       add-mappings: false
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://host.docker.internal:5432/kpi_db
+    url: jdbc:postgresql://localhost:5432/kpi_db
     username: postgres
     password: bexa
 #    hikari:
@@ -35,3 +35,14 @@ auth:
   white-list:
     - "/auth/login"
     - "/auth/register"
+minio:
+  endpoint: http://localhost:9000
+  accessKey: ${MINIO_ROOT_USER:admin_username}
+  secretKey: ${MINIO_ROOT_PASSWORD:adminpassword123}
+project:
+  upload:
+    path:
+      default-bucket: java-team
+root:
+  path: home/files/
+
