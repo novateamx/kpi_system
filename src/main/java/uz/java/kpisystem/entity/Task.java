@@ -2,8 +2,9 @@ package uz.java.kpisystem.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import uz.java.kpisystem.entity.enums.TaskLayer;
 import uz.java.kpisystem.entity.enums.TaskPriority;
 import uz.java.kpisystem.entity.enums.TaskStatus;
@@ -17,13 +18,20 @@ import java.util.List;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
-@Table(name = "tasks")
+@Getter
+@Setter
+@Table(name = "tasks", indexes = {
+        @Index(name = "idx_taskstatus", columnList = "taskStatus")
+})
 public class Task extends Auditable {
 
     private String name;
 
     private String description;
+
+    @ManyToOne(fetch = FetchType.LAZY) // N+1 issue
+    @JoinColumn(name = "project_id")
+    private Project project;
 
     @Enumerated(EnumType.STRING)
     private TaskStatus taskStatus;

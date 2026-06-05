@@ -1,0 +1,155 @@
+ @Transactional faqat public method lada ishlatilinadi, ACID prinsipllarini automatik boshqaradi.
+
+   @Transactional
+   public void createOrder() {
+     orderRepository.save(order);
+     paymentRepository.save(payment);
+   }
+
+    Ma’nosi:
+
+    bu method transaction ichida ishlaydi
+    agar hammasi successful bo‘lsa → commit
+    exception bo‘lsa → rollback
+
+ @Transactional faqat Unchecked exceptions (RuntimeException va uning farzandlari) larini rollback qiladi
+ ammo checked Exceptionlarni rollback qilmaydi( masalan Exception.class, IOException.class)
+ checked exceptionlarni rollback qilish uchun -->
+
+    @Transactional(rollbackFor = Exception.class)
+    public void test() throws Exception {
+        throw new Exception("error");
+    }
+ qachon rollback qilmaydi? try-catch block ishlatsang, self-invocation, throw new Exception desang.
+ Spring ichida nima bo'ladi? Asosiy g'oya:PROXY Spring sening classing ni togridan togri chaqirmaydi,
+ u proxy yaratadi yani nusxa oladi service dan. Spring 2 xil proxy ishlatadi:
+    1) JDK Dynamic Proxy (interface bo‘lsa)
+    2) CGLIB Proxy (class bo‘lsa)
+ Masalan, orderService.createOrder(); deb yozsak, Spring aslida orderService = proxy(orderService) va proxy
+ ichida nima bo'ladi?
+ public void createOrder() {
+
+     TransactionStatus tx = transactionManager.getTransaction();
+
+     try {
+         target.createOrder(); // original method
+
+         transactionManager.commit(tx);
+     } catch (Exception e) {
+         transactionManager.rollback(tx);
+         throw e;
+     }
+ }
+
+ Transaction lifecycle -->>
+ 1. START
+ begin transaction
+ 2. EXECUTION
+ SQL statements execute
+ 3. SUCCESS
+ commit
+ 4. ERROR
+ rollback
+
+ Important qoidalar--->>
+ 1. Self-invocation problem
+ public void a() {
+     b(); // transactional ishlamaydi!
+ }
+
+ @Transactional
+ public void b() {
+ }
+ this.b() orqali chaqiryapti
+ proxy bypass bo‘ladi
+ transaction ishlamaydi
+
+ 2. Only public methods
+ @Transactional
+ private void test() {} //  ishlamaydi
+
+ 3. Runtime exception rollback qiladi
+ throw new RuntimeException(); // rollback
+
+ Checked exception:
+
+ throw new Exception(); // default rollback emas
+
+ ##########  Propagation (advanced concept) ############
+ @Transactional(propagation = Propagation.REQUIRED)
+ REQUIRED -- mavjud bo'lsa join qiladi
+ REQUIRES_NEW -- yangi transaction ochadi
+ MANDATORY -- mavjud bo'lishi shart
+
+ ACID Principles:
+ACID — bu database transaction’larning to‘g‘ri va ishonchli ishlashini kafolatlaydigan 4 ta qoida. Bank systemlari
+(pul o‘tkazish, balans) aynan ACID ustiga quriladi.
+
+Scenario: Bankdan pul o‘tkazish
+Ali (100$) → Vali (50$)
+Ali 30$ yuboradi
+
+Transaction ichida 2 ta ish bo‘ladi:
+1. Ali balance -= 30
+2. Vali balance += 30
+
+1. ATOMICITY (hammasi yoki hech narsa)
+Ma’nosi:
+   Transaction ichidagi hamma amal birga bajariladi yoki umuman bajarilmaydi
+
+Muammo (atomicity bo‘lmasa):
+1. Ali dan 30$ yechildi ✔
+2. Vali ga qo‘shilmadi  (error bo‘ldi)
+Natija:
+Pul yo‘qolib ketadi
+
+ACID bilan:
+Ali -30
+Vali +30
+Agar 2-qadamda error bo‘lsa:
+ROLLBACK → Ali puli qaytadi
+
+2.  CONSISTENCY (ma’lumot doim to‘g‘ri bo‘lishi)
+Ma’nosi:
+   DB har doim valid holatda qoladi
+   Bank rule:
+   Balance never becomes negative (masalan policy bo‘lsa)
+Consistency buzilsa:
+Ali balance = -50 ❌ (invalid state)
+
+Consistency bilan:
+Agar Ali’da yetarli pul bo‘lmasa → transaction fail
+DB eski holatda qoladi
+
+3.  ISOLATION (transactionlar bir-biriga halal bermaydi)
+Ma’nosi:
+ Parallel transactionlar bir-biriga aralashmaydi
+ Scenario:
+ Ali balance = 100
+ 2 ta transaction bir vaqtda:
+ T1: Ali → Vali (50$)
+ T2: Ali → John (60$)
+
+ Isolation bo‘lmasa:
+ Ikalasi ham o‘qiydi:
+ 100$
+ Natija:
+ -50$ (overspending)
+
+ Isolation bilan:
+ T1 commit bo‘ladi
+ T2 fail yoki wait qiladi
+
+ 4.  DURABILITY (data saqlanib qoladi)
+ Ma’nosi:
+    Transaction commit bo‘lsa — DB crash bo‘lsa ham yo‘qolmaydi
+
+    Scenario:
+    Ali → Vali transfer SUCCESS
+    COMMIT bo‘ldi
+    Keyin:
+    Server o‘chib qoldi
+
+    Durability bilan:
+    Data disk / WAL log’da saqlangan
+    Restartdan keyin ham mavjud

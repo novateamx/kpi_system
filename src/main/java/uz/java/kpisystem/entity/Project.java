@@ -28,7 +28,7 @@ public class Project extends Auditable {
     private ProjectStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "organization_id")
+    @JoinColumn(name = "organization_id") // bu yerda ham N+1 issue bolishi mumkin Projectlani listini olganda
     private Organization organization; // target= "organizationId", source = "organization.id"
 
     @ManyToOne(fetch = FetchType.LAZY)

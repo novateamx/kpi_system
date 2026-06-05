@@ -4,10 +4,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 @Slf4j
 @SpringBootApplication
 @EnableConfigurationProperties
+//@EnableAsync
 public class KpiSystemApplication {
 
 //    private final UserRepository userRepository;
@@ -75,5 +77,33 @@ public class KpiSystemApplication {
 //    2-usuli application.yml bilan
 
 //    .gitignore bizada git ga push qilinmaydigan narsalar
+
+
+
+//    @Transactional faqat public method lada ishlatilinadi, ACID prinsipllarini automatik
+//    boshqaradi.
+
+//@Transactional
+//public void createOrder() {
+//    orderRepository.save(order);
+//    paymentRepository.save(payment);
+//}
+
+//    Ma’nosi:
+
+//    bu method transaction ichida ishlaydi
+//    agar hammasi successful bo‘lsa → commit
+//    exception bo‘lsa → rollback
+//    @Transactional faqat Unchecked exceptions (RuntimeException va uning farzandlari) larini rollback qiladi
+//     ammo checked Exceptionlarni rollback qilmaydi( masalan Exception.class, IOException.class)
+
+//    checked exceptionlarni rollback qilish uchun -->
+//    @Transactional(rollbackFor = Exception.class)
+//    public void test() throws Exception {
+//        throw new Exception("error");
+//    }
+
+//    qachon rollback qilmaydi? try-catch block ishlatsang, self-invocation, throw new Exception desang
+
 
 }

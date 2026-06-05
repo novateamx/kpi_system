@@ -43,11 +43,11 @@ public class User extends Auditable {
     @JoinTable(name = "user_organizations",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "organization_id"))
-    private Set<Organization> organization = new HashSet<>();  // getAll(), getOne() EAGER da kamchiligi bor
+    private Set<Organization> organization = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id")
-    private Role role;
+    private Role role; // N+1 issue
 
     private String password;
 

@@ -14,7 +14,7 @@ public class TaskTag extends Auditable {
 
     private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY) // N+1 issue
     @JoinColumn(name = "task_id")
     private Task task;
 }

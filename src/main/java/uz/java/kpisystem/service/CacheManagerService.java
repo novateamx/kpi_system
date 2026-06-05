@@ -4,6 +4,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import uz.java.kpisystem.config.UserSession;
 import uz.java.kpisystem.dto.CacheDto;
@@ -29,11 +30,8 @@ public class CacheManagerService {
         return operations.get(generateKey(key, cachePrefix));
     }
 
+//    @Async - boshqa patokda ishlatib yuboradi shu method ni
     public void put(String key, String cachePrefix, Object data) {
-        operations.set(generateKey(key, cachePrefix), data);
-    }
-
-    public void putData(String key, String cachePrefix, CacheDto data) {
         operations.set(generateKey(key, cachePrefix), data);
     }
 
@@ -41,9 +39,9 @@ public class CacheManagerService {
         User user = userSession.getCurrentUser().getUser();
         return String.format("%s/%s/%s", cachePrefix, key, user.getId());
     }
-    // 1 chisa prefix keladi
+    // 1 chisida prefix keladi
     // 2 chisida entity id si keladi
-    // 3 sida user idsi kealadi
+    // 3 chisida user id si kealadi
 
     public void delete(String cachePrefix) {
         User user = userSession.getCurrentUser().getUser();
@@ -66,24 +64,5 @@ public class CacheManagerService {
     }
 
     public void deleteMultiple(List<String> cachePrefixes) {
-//        User user = userSession.getCurrentUser().getUser();
-//        Set<String> set = user.getRoles().stream().map(Role::getCode).collect(Collectors.toSet());
-//        Set<String> allKeys = redisTemplate.keys("*");
-//        for (String cachePrefix : cachePrefixes) {
-//            if (set.containsAll(List.of("ROLE_SUPERADMIN", "ROLE_REKTOR"))) {
-//                if (!allKeys.isEmpty()) {
-//                    redisTemplate.delete(allKeys.stream()
-//                            .filter(deletedKey -> deletedKey.startsWith(cachePrefix))
-//                            .collect(Collectors.toSet()));
-//                }
-//            } else {
-//                if (!allKeys.isEmpty()) {
-//                    redisTemplate.delete(allKeys.stream()
-//                            .filter(deletedKey -> deletedKey.startsWith(cachePrefix)
-//                                    && deletedKey.endsWith(user.getId().toString()))
-//                            .collect(Collectors.toSet()));
-//                }
-//            }
-//        }
     }
 }

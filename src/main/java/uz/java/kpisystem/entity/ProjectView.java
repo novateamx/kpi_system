@@ -15,6 +15,6 @@ public class ProjectView  extends Auditable{
     private String type;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "project_id")
+    @JoinColumn(name = "project_id") // N+1 issue
     private Project project;
 }
