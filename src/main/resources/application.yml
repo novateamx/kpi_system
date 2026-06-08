@@ -45,4 +45,14 @@ project:
       default-bucket: java-team
 root:
   path: home/files/
-
+############## KEYCLOAK ######################
+app:
+  keycloak:
+    admin-password: ${KC_BOOTSTRAP_ADMIN_PASSWORD:keycloakAdmin@1234}
+    admin-username: ${KC_BOOTSTRAP_KEYCLOAK_ADMIN:keycloakAdmin}
+    master-realm: master
+    realm: kpi-system
+    keycloak-server-url: http://localhost:8080
+    client-id: kpi-cli
+    admin-client-id: admin-cli
+    client-secret: cNXjqzBpCxJ1ONmxfMFsq0LE0Kcjjs5R

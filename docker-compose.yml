@@ -1,19 +1,19 @@
 version: '3.8'
 #  agar shu yerni ozida image qidirmoqchi bolsayizla Ctrl+  space 2x
 services:
-  app:
-    build: .
-    container_name: kpi-system
-    ports:
-      - "7777:7777"
-    depends_on:
-      - redis
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/kpi_db
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: bexa
-    networks:
-      - kpisystem-net
+#  app:
+#    build: .
+#    container_name: kpi-system
+#    ports:
+#      - "7777:7777"
+#    depends_on:
+#      - redis
+#    environment:
+#      SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/kpi_db
+#      SPRING_DATASOURCE_USERNAME: postgres
+#      SPRING_DATASOURCE_PASSWORD: bexa
+#    networks:
+#      - kpisystem-net
   redis:
     image: redis:latest
     container_name: redis
@@ -53,12 +53,49 @@ services:
     command: server /data --console-address ":9001"
     networks:
       - kpisystem-net
+  keycloak-db:
+    image: postgres:17
+    container_name: keycloak-db
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: keycloak
+    ports:
+      - "5433:5432"
+    volumes:
+      - keycloak_db_data:/var/lib/postgresql/data
+    networks:
+      - kpisystem-net
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.0
+    container_name: keycloak
+    command: >
+      start-dev
+      --features=token-exchange
+    environment:
+      KC_DB: postgres
+      KC_DB_URL_HOST: keycloak-db
+      KC_DB_URL_DATABASE: keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: keycloak
+      KEYCLOAK_ADMIN: keycloakAdmin
+      KEYCLOAK_ADMIN_PASSWORD: keycloakAdmin@1234
+      KC_HOSTNAME: localhost
+      KC_HTTP_ENABLED: true
+    ports:
+      - "8080:8080"
+    depends_on:
+      - keycloak-db
+    networks:
+      - kpisystem-net
 
 
 volumes:
   redis_data:
   pg_data:
   minio_data:
+  keycloak_db_data:
 
 networks:
   kpisystem-net:
