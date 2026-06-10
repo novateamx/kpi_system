@@ -24,7 +24,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         String keycloakId = authentication.getName();
         String password = authentication.getCredentials().toString();
         CustomUserDetails userDetails = customUserDetailService.loadUserByUsername(keycloakId);
-        if (!passwordEncoder.matches(password, userDetails.getPassword()))
+        if (!passwordEncoder.matches(password, userDetails.getUser().getPassword()))
             throw new ValidationException("invalid.user.details");
         return new UsernamePasswordAuthenticationToken(userDetails, authentication);
     }

@@ -15,6 +15,7 @@ import uz.java.kpisystem.repository.UserRepository;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Function;
 
 @Service
@@ -29,7 +30,7 @@ public class CustomUserDetailService implements UserDetailsService {
     @Override
     @Transactional(readOnly = true)
     public CustomUserDetails loadUserByUsername(String keycloakId) throws UsernameNotFoundException {
-        User user = userRepository.findByKeycloakId(keycloakId).orElseThrow(() ->
+        User user = userRepository.findByKeycloakId(UUID.fromString(keycloakId)).orElseThrow(() ->
                 new UsernameNotFoundException("User not found with id: " + keycloakId));
 
         Set<GrantedAuthority> authorities = new HashSet<>();

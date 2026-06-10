@@ -43,6 +43,7 @@ auth:
   white-list:
     - "/auth/login"
     - "/auth/register"
+    - "/users/**"
 minio:
   endpoint: http://localhost:9000
   accessKey: ${MINIO_ROOT_USER:admin_username}

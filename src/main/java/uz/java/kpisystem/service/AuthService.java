@@ -85,7 +85,7 @@ public class AuthService {
             DecodedJWT data = JWT.decode(response.body().getAccessToken());
 
             customAuthenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(
-                    data.getClaim("preferred_username").asString(), password
+                    data.getClaim("sub").asString(), password
             ));
             return TokenResponse.builder()
                     .accessToken(response.body().getAccessToken())
