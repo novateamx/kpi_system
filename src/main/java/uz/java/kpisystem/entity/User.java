@@ -9,6 +9,7 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -56,4 +57,6 @@ public class User extends Auditable {
 
     @Column(unique = true)
     private String username;
+
+    private UUID keycloakId;
 }

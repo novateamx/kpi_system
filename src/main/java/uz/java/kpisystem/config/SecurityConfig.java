@@ -3,12 +3,16 @@ package uz.java.kpisystem.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -16,8 +20,10 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import uz.java.kpisystem.filter.GlobalFilter;
+import uz.java.kpisystem.service.CustomUserDetailService;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 @Configuration
@@ -27,6 +33,7 @@ import java.util.List;
 public class SecurityConfig {
     private final GlobalFilter globalFilter;
     private final AuthWhiteListProperty authWhiteListProperty;
+    private final CustomUserDetailService customUserDetailService;
 
     //    1. Basic authorization
 //    2. Form-based authorization
@@ -61,6 +68,9 @@ public class SecurityConfig {
 //                        .requestMatchers("/projects/**", HttpMethod.POST.name()).permitAll()
                                 .anyRequest().authenticated()
                 )
+                .oauth2ResourceServer(oauth2ResourceServer -> {
+                    oauth2ResourceServer.jwt(jwt-> jwt.jwtAuthenticationConverter(customJwtAuthenticationConverter()));
+                })
                 .sessionManagement(httpSecuritySessionManagementConfigurer ->
                         httpSecuritySessionManagementConfigurer
                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -69,6 +79,15 @@ public class SecurityConfig {
                 .exceptionHandling(httpSecurityExceptionHandlingConfigurer ->
                         httpSecurityExceptionHandlingConfigurer.configure(http));
         return http.build();
+    }
+
+    private Converter<Jwt, UsernamePasswordAuthenticationToken> customJwtAuthenticationConverter() {
+        return jwt -> {
+            String keycloakId = jwt.getClaim("sub"); // Keycloak da jwt token ni ichidan user ni keycloakId ini olish
+            CustomUserDetails user = customUserDetailService.loadUserByUsername(keycloakId);
+            Collection<? extends GrantedAuthority> authorities = user.getAuthorities();
+            return new UsernamePasswordAuthenticationToken(user, jwt, authorities);
+        };
     }
 
     @Bean

@@ -28,9 +28,9 @@ public class CustomUserDetailService implements UserDetailsService {
 
     @Override
     @Transactional(readOnly = true)
-    public CustomUserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
-        User user = userRepository.findById(Long.parseLong(userId)).orElseThrow(() ->
-                new UsernameNotFoundException("User not found with id: " + userId));
+    public CustomUserDetails loadUserByUsername(String keycloakId) throws UsernameNotFoundException {
+        User user = userRepository.findByKeycloakId(keycloakId).orElseThrow(() ->
+                new UsernameNotFoundException("User not found with id: " + keycloakId));
 
         Set<GrantedAuthority> authorities = new HashSet<>();
         try {

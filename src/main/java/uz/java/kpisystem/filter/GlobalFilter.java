@@ -1,5 +1,6 @@
 package uz.java.kpisystem.filter;
 
+import com.auth0.jwt.interfaces.DecodedJWT;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -54,11 +55,11 @@ public class GlobalFilter extends OncePerRequestFilter {
         if (!isOpenPath(requestUri)) {
             try {
                 String token = getTokenFromRequest(request);
-                if (jwtTokenService.isValid(token)) {
-                    String userId = jwtTokenService.subject(token);
-                    CustomUserDetails customUserDetails = userDetailsService.loadUserByUsername(userId);
-                    authenticate(request, customUserDetails);
-                }
+                DecodedJWT verified = jwtTokenService.validate(token);
+                String keycloakId = verified.getClaim("sub").asString();
+                CustomUserDetails customUserDetails = userDetailsService.loadUserByUsername(keycloakId);
+                authenticate(request, customUserDetails);
+
             } catch (GenericRuntimeException | AccessDeniedException e) {
                 log.error("Global filter error", e.getMessage());
                 resolver.resolveException(request, response, null, e);
@@ -97,6 +98,5 @@ public class GlobalFilter extends OncePerRequestFilter {
 
     private boolean isOpenPath(String currentPath) {
         return Arrays.stream(property.getWhiteList().toArray(new String[0])).anyMatch(p -> pathMatcher.match(p, currentPath));
-
     }
 }
