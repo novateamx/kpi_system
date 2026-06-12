@@ -1,7 +1,6 @@
 package uz.java.kpisystem.mapper;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import org.mapstruct.*;
 import uz.java.kpisystem.dto.UserRequest;
 import uz.java.kpisystem.entity.User;
 
@@ -14,4 +13,9 @@ public interface UserMapper {
     @Mapping(target = "keycloakId", ignore = true)
     @Mapping(target = "status", ignore = true)
     User toEntity(UserRequest request);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "role", ignore = true)
+    @Mapping(target = "organization", ignore = true)
+    void updateFromRequest(UserRequest request, @MappingTarget User user);
 }
