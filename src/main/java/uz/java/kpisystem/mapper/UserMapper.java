@@ -1,7 +1,8 @@
 package uz.java.kpisystem.mapper;
 
 import org.mapstruct.*;
-import uz.java.kpisystem.dto.UserRequest;
+import uz.java.kpisystem.dto.user.UserInfo;
+import uz.java.kpisystem.dto.user.UserRequest;
 import uz.java.kpisystem.entity.User;
 
 @Mapper(componentModel = "spring")
@@ -18,4 +19,6 @@ public interface UserMapper {
     @Mapping(target = "role", ignore = true)
     @Mapping(target = "organization", ignore = true)
     void updateFromRequest(UserRequest request, @MappingTarget User user);
+
+    UserInfo toResponse(User user);
 }

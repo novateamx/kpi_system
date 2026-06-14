@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import uz.java.kpisystem.dto.TokenResponse;
-import uz.java.kpisystem.dto.UserInfo;
+import uz.java.kpisystem.dto.user.UserInfo;
 import uz.java.kpisystem.service.AuthService;
 
 @RestController

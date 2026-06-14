@@ -4,7 +4,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import uz.java.kpisystem.dto.UserRequest;
+import uz.java.kpisystem.dto.user.UserRequest;
 import uz.java.kpisystem.service.UserService;
 
 @RestController
@@ -30,7 +30,14 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('SYSTEM_ADMIN', 'ORGANIZATION_ADMIN')")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         return ResponseEntity.ok(userService.delete(id));
+    }
+
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('SYSTEM_ADMIN', 'ORGANIZATION_ADMIN')")
+    public ResponseEntity<?> getUser(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.getUser(id));
     }
 }

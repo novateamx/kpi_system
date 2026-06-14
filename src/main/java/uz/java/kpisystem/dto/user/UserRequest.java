@@ -1,4 +1,4 @@
-package uz.java.kpisystem.dto;
+package uz.java.kpisystem.dto.user;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;

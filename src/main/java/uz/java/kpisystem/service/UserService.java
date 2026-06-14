@@ -11,7 +11,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import uz.java.kpisystem.dto.UserRequest;
+import uz.java.kpisystem.dto.user.UserInfo;
+import uz.java.kpisystem.dto.user.UserRequest;
 import uz.java.kpisystem.entity.Organization;
 import uz.java.kpisystem.entity.Role;
 import uz.java.kpisystem.entity.User;
@@ -195,5 +196,12 @@ public class UserService {
             keycloak.realm(realm).users().create(oldUser.toRepresentation());
         }
         return true;
+    }
+
+    public UserInfo getUser(Long id) {
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new CustomNotFoundException("User not found")
+        );
+        return userMapper.toResponse(user);
     }
 }
