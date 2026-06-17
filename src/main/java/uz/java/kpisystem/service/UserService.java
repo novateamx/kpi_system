@@ -18,11 +18,15 @@ import uz.java.kpisystem.entity.Role;
 import uz.java.kpisystem.entity.User;
 import uz.java.kpisystem.exception.CustomNotFoundException;
 import uz.java.kpisystem.exception.GenericRuntimeException;
+import uz.java.kpisystem.filter.UserFilter;
 import uz.java.kpisystem.mapper.UserMapper;
 import uz.java.kpisystem.repository.OrganizationRepository;
 import uz.java.kpisystem.repository.RoleRepository;
 import uz.java.kpisystem.repository.UserRepository;
+import uz.java.kpisystem.specifications.SearchSpecification;
+import uz.java.kpisystem.specifications.UserSpecification;
 
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -204,4 +208,26 @@ public class UserService {
         );
         return userMapper.toResponse(user);
     }
+
+
+    @Transactional(readOnly = true)
+    public List<UserInfo> getUsers(UserFilter filter) {
+
+        UserSpecification specification =
+                new UserSpecification(filter);
+
+        Pageable pageable =
+                SearchSpecification.getPageable(
+                        filter.getPage(),
+                        filter.getLimit(),
+                        filter.getSortBy()
+                );
+
+        return userRepository
+                .findAll(specification, pageable)
+                .stream()
+                .map(userMapper::toResponse)
+                .toList();
+    }
+
 }
