@@ -1,0 +1,65 @@
+spring:
+  sql:
+    init:
+      platform: postgres
+  mvc:
+    throw-exception-if-no-handler-found: true
+  web:
+    resources:
+      add-mappings: false
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/kpi_db
+    username: postgres
+    password: 12345
+  #    hikari:
+  #      connection-timeout: 20000        # 20 sekund kutadi
+  #      initialization-fail-timeout: -1  # cheksiz retry qiladi
+  jpa:
+    hibernate:
+      ddl-auto: update
+  data:
+    redis:
+      port: 6379
+      host: redis
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
+          issuer-uri: http://localhost:8080/realms/kpi-system
+
+
+server:
+  port: 7777
+
+jwt:
+  token:
+    secret: 3cfa76ef14937c1c0ea519f8fc057a80fcd04a7420f8e8bcd0a7567c272e007b
+auth:
+  white-list:
+    - "/auth/login"
+    - "/auth/register"
+    - "/users/**"
+minio:
+  endpoint: http://localhost:9000
+  accessKey: ${MINIO_ROOT_USER:admin_username}
+  secretKey: ${MINIO_ROOT_PASSWORD:adminpassword123}
+project:
+  upload:
+    path:
+      default-bucket: java-team
+root:
+  path: home/files/
+############## KEYCLOAK ######################
+app:
+  keycloak:
+    admin-password: ${KC_BOOTSTRAP_ADMIN_PASSWORD:keycloakAdmin@1234}
+    admin-username: ${KC_BOOTSTRAP_KEYCLOAK_ADMIN:keycloakAdmin}
+    master-realm: master
+    realm: kpi-system
+    keycloak-server-url: http://localhost:8080
+    client-id: kpi-cli
+    admin-client-id: admin-cli
+    client-secret: cNXjqzBpCxJ1ONmxfMFsq0LE0Kcjjs5R

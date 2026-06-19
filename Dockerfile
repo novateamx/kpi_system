@@ -14,7 +14,7 @@ WORKDIR /app
 
 COPY --from=builder /app/build/libs/*.jar app.jar
 
-EXPOSE 7777
+EXPOSE 7001
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
 # 1-orinda proyektni turi yani maven yoki gradle da qilingani aniqlanadi
