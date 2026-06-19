@@ -57,6 +57,7 @@ public record UserSpecification(UserFilter filter)
             );
         }
 
+        predicates.add(cb.equal(root.get("deleted"), false));
         return cb.and(predicates.toArray(new Predicate[0]));
     }
 }
